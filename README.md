@@ -2,6 +2,11 @@
   ロボットシステム学課題2
 # system_monitor_launch.py
   cpu使用率,メモリ使用率,GPU使用率,ストレージの使用率と指定したフォルダの中で容量の大きいものを上から5つ教えてくれるものです。
+
+#ダウンロード
+  pip install psutil --break-system-packages 
+  git clone https://github.com/snake0227/ros2_kadai
+
 # 使い方
   pip install psutil --break-system-packages 
   git clone https://github.com/snake0227/ros2_kadai
