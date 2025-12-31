@@ -9,9 +9,7 @@
   git clone https://github.com/snake0227/ros2_kadai
 
 # 使い方
-  pip install psutil --break-system-packages 
-  git clone https://github.com/snake0227/ros2_kadai
-　ros2 launch kadai system_monitor_launch.py path:=<ディレクトリのパス>
+  ros2 launch kadai system_monitor_launch.py path:=<ディレクトリのパス>
 # 実行環境
   Ubuntu 24.04
   Python3.7~3.10
