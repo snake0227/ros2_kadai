@@ -15,20 +15,20 @@ cd "$dir/ros2_ws" || ng "$LINENO"
 source install/setup.bash || ng "$LINENO"
 
 # --- テスト1: 正常系 ---
+## --- テスト1: 正常系 ---
 echo "Test 1: Normal execution"
-# バックグラウンドで起動
-timeout 10s ros2 run kadai disk_monitor /tmp > /tmp/disk_test.log 2>&1 &
+# バックグラウンドで起動（15秒間動かし続けるように少し長めにする）
+timeout 30s ros2 run kadai disk_monitor /tmp > /tmp/disk_test.log 2>&1 &
 PID=$!
 
+# 起動するまで少し待つ（長すぎるとtimeoutにぶつかるので、3〜5秒程度にする）
+sleep 5
 
-sleep 10
-
-# トピックを確認（timeoutコマンドを組み合わせて、トピックが来るまで最大5秒待機）
-cat /tmp/disk_test.log  # これを入れるとActionsのログにPythonのエラー内容が出ます
+# トピックを確認（ノードが動いている間にキャッチする）
 timeout 5s ros2 topic echo /system_info --once || ng "$LINENO"
 
-# 以降は同じ...
-
+# 終わったらPIDを確実に殺す（念のため）
+kill $PID 2>/dev/null
 # --- テスト2: 異常系（存在しないパス） ---
 echo "Test 2: Invalid path"
 # 存在しないパスを指定。終了コード 1 を期待
