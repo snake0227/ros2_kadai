@@ -14,36 +14,39 @@ class SystemMonitor(Node):
     def __init__(self, target_path):
         super().__init__('system_monitor')
         self.publisher_ = self.create_publisher(String, 'system_info', 10)
-        self.target_drive = target_path
-        self.target_dir = target_path
+        self.target_dir = os.path.abspath(target_path)
         self.timer = self.create_timer(2.0, self.timer_callback)
 
     def timer_callback(self):
         msg = String()
+        # CPUとメモリの取得は安定しているはず
         cpu_usage = psutil.cpu_percent()
         memory = psutil.virtual_memory()
 
+        # ディスク容量取得（失敗してもノードを落とさない）
         try:
-            total, used, free = shutil.disk_usage(self.target_drive)
+            total, used, free = shutil.disk_usage(self.target_dir)
             drive_info = f"{free / (1024**3):.2f} GB / {total / (1024**3):.2f} GB"
-        except Exception:
-            drive_info = "Disk Error"
+        except Exception as e:
+            drive_info = f"Disk Error: {e}"
 
         file_list = ""
-        items = []
         try:
+            items = []
             if os.path.exists(self.target_dir):
                 with os.scandir(self.target_dir) as entries:
                     for entry in entries:
-                        if entry.is_file():
-                            items.append((entry.name, entry.stat().st_size))
+                        try:
+                            if entry.is_file():
+                                items.append((entry.name, entry.stat().st_size))
+                        except: continue
                 items.sort(key=lambda x: x[1], reverse=True)
                 for name, size in items[:5]:
                     file_list += f"  - {name}: {size / (1024**3):.4f} GB\n"
             else:
-                file_list = "  Directory no longer exists\n"
-        except Exception:
-            file_list = "  Read Error\n"
+                file_list = "  Directory not found\n"
+        except Exception as e:
+            file_list = f"  Read Error: {e}\n"
 
         info = (
             f"\n[CPU Usage]: {cpu_usage}%"
@@ -57,39 +60,33 @@ class SystemMonitor(Node):
         self.publisher_.publish(msg)
 
 def main(args=None):
-    # ROS2引数を除外
-    import sys
     clean_args = rclpy.utilities.remove_ros_args(sys.argv)
     
-    # 引数チェック: 自分のプログラム名(0) + ターゲットパス(1) が必要
     if len(clean_args) < 2:
         sys.stderr.write("ERROR: No target path provided.\n")
-        sys.exit(1) # ここで 1 を返して終了させるのが重要
-        
+        sys.exit(1)
+
     target = clean_args[1]
 
-    # ディレクトリチェック
+    # ディレクトリが存在するか事前に厳しくチェック
     if not os.path.isdir(target):
         sys.stderr.write(f"ERROR: Directory '{target}' not found.\n")
         sys.exit(1)
 
     rclpy.init(args=args)
-    # ...以下、Nodeの作成とspin
-    node = SystemMonitor(target)
-
+    
     try:
+        node = SystemMonitor(target)
         rclpy.spin(node)
     except KeyboardInterrupt:
         pass
     except Exception as e:
-        sys.stderr.write(f"Unexpected error: {e}\n")
-        if rclpy.ok():
-            node.destroy_node()
-            rclpy.shutdown()
-        sys.exit(1)
+        # ここでエラー内容を詳しく出す
+        import traceback
+        sys.stderr.write(f"CRITICAL ERROR: {e}\n")
+        traceback.print_exc(file=sys.stderr)
     finally:
         if rclpy.ok():
-            node.destroy_node()
             rclpy.shutdown()
 
 if __name__ == '__main__':
