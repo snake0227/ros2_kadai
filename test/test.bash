@@ -24,7 +24,7 @@ PID=$!
 sleep 10
 
 # トピックを確認（timeoutコマンドを組み合わせて、トピックが来るまで最大5秒待機）
-timeout 5s ros2 topic echo /disk_info --once || ng "$LINENO"
+timeout 5s ros2 topic echo /system_info --once || ng "$LINENO"
 
 # 以降は同じ...
 
