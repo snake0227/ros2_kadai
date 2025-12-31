@@ -9,7 +9,8 @@ jobs:
       - name: build and test
         shell: bash
         run: |
-
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
           python3 -m pip install psutil
           # 1. ワークスペースの作成
           mkdir -p /root/ros2_ws/src/kadai
