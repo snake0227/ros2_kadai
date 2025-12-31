@@ -1,4 +1,4 @@
-# kadai2
+# system_monitor (ros2_kadai)
   ロボットシステム学課題2
 
    ![test](https://github.com/snake0227/ros2_kadai/actions/workflows/test.yml/badge.svg)
@@ -7,10 +7,12 @@
 
   使用したノード
   1. system_monitor:指定されたディレクトリパスを引数として受け取り、システム情報を定期的にパブリッシュします.
+
      配信トピック：system_info
+
      内容:CPU使用率(%), RAMの使用状況(GB), ディスクの空き容量(GB), および指定ディレクトリ内のファイルサイズTOP5
 
-  2.  system_info_sub
+  3.  system_info_sub
       sytem_infoを受け取り、標準室力に表示するサブスクライバ.
  
 # ダウンロード
@@ -19,10 +21,14 @@
   git clone https://github.com/snake0227/ros2_kadai
 
 # 使い方
+  
   ros2 launch kadai system_monitor_launch.py target_path:=/<ディレクトリのパス>
+
 # 実行環境
   Ubuntu 24.04
+  
   Python3.7~3.10
+  
   ros2
 
 # ライセンス
