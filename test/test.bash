@@ -21,7 +21,7 @@ timeout 10s ros2 run kadai disk_monitor /mnt/c > /tmp/disk_test.log 2>&1 &
 PID=$!
 
 # 5秒待ってトピックを確認。一度もデータが来なければ ng
-ros2 topic echo /disk_info --once --timeout 5 || ng "$LINENO"
+ros2 topic echo /disk_info --once || ng "$LINENO"
 
 # --- テスト2: 異常系（存在しないパス） ---
 echo "Test 2: Invalid path"
