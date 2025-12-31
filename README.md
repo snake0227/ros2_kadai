@@ -3,8 +3,8 @@
 # system_monitor_launch.py
   cpu使用率,メモリ使用率,GPU使用率,ストレージの使用率と指定したフォルダの中で容量の大きいものを上から5つ教えてくれるものです。
 # 使い方
-  pip install psutil --break-system-packages \n
-  git clone \n
+  pip install psutil --break-system-packages 
+  git clone 
 　ros2 launch kadai system_monitor_launch.py path:=<ディレクトリのパス>
 # 実行環境
   Ubuntu 24.04
