@@ -58,9 +58,15 @@ class SystemMonitor(Node):
 
 def main(args=None):
     # ROS2引数を除外
+    import sys
     clean_args = rclpy.utilities.remove_ros_args(sys.argv)
-    # デフォルトを '/' に変更（GitHub Actionsでのエラー防止）
-    target = clean_args[1] if len(clean_args) > 1 else '/'
+    
+    # 引数チェック: 自分のプログラム名(0) + ターゲットパス(1) が必要
+    if len(clean_args) < 2:
+        sys.stderr.write("ERROR: No target path provided.\n")
+        sys.exit(1) # ここで 1 を返して終了させるのが重要
+        
+    target = clean_args[1]
 
     # ディレクトリチェック
     if not os.path.isdir(target):
@@ -68,6 +74,7 @@ def main(args=None):
         sys.exit(1)
 
     rclpy.init(args=args)
+    # ...以下、Nodeの作成とspin
     node = SystemMonitor(target)
 
     try:
