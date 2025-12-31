@@ -1,11 +1,11 @@
 # robosys2025
-  ロボットシステム学課題1
-#stdin_kadaiコマンド
-  
+  ロボットシステム学課題2
+#system_monitor_launch.py
+  cpu使用率,メモリ使用率,GPU使用率,ストレージの使用率と指定したフォルダの中で容量の大きいものを上から5つ教えてくれるものです。
 # 使い方
-
+　ros2 launch kadai system_monitor_launch.py path:=<ディレクトリのパス>
 # 実行環境
-  Ubuntu 22.04
+  Ubuntu 24.04
   Python3.7~3.10
 
 # ライセンス
