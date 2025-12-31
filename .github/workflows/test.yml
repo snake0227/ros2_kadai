@@ -7,20 +7,20 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: build and test
-        shell: bash  # コンテナ内での実行を確実にするため
+        shell: bash
         run: |
-          # 1. ワークスペースの作成とソースのコピー
-          mkdir -p /root/ros2_ws/src
+          # 1. ワークスペースの作成
+          mkdir -p /root/ros2_ws/src/kadai
+          
+          # 2. カレントディレクトリの内容を src/kadai へコピー
+          # これにより /root/ros2_ws/src/kadai/test/test.bash が配置されます
           rsync -av ./ /root/ros2_ws/src/kadai/
           
-          # 2. ワークスペースへ移動
-          cd /root/ros2_ws
-          
           # 3. ビルド
-          # コンテナ内のROS 2環境を読み込んでからビルド
+          cd /root/ros2_ws
           source /opt/ros/humble/setup.bash
           colcon build --packages-select kadai
           
-          # 4. テストの実行
-          # 第一引数に /root を渡して test.bash を起動
+          # 4. テスト実行（パスを修正）
+          # /root/ros2_ws の中から見た相対パスを指定します
           bash -xv ./src/kadai/test/test.bash /root
