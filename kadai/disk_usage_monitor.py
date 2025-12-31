@@ -19,11 +19,9 @@ class SystemMonitor(Node):
 
     def timer_callback(self):
         msg = String()
-        # CPUとメモリの取得は安定しているはず
         cpu_usage = psutil.cpu_percent()
         memory = psutil.virtual_memory()
 
-        # ディスク容量取得（失敗してもノードを落とさない）
         try:
             total, used, free = shutil.disk_usage(self.target_dir)
             drive_info = f"{free / (1024**3):.2f} GB / {total / (1024**3):.2f} GB"
@@ -68,7 +66,7 @@ def main(args=None):
 
     target = clean_args[1]
 
-    # ディレクトリが存在するか事前に厳しくチェック
+    
     if not os.path.isdir(target):
         sys.stderr.write(f"ERROR: Directory '{target}' not found.\n")
         sys.exit(1)
@@ -81,7 +79,7 @@ def main(args=None):
     except KeyboardInterrupt:
         pass
     except Exception as e:
-        # ここでエラー内容を詳しく出す
+    
         import traceback
         sys.stderr.write(f"CRITICAL ERROR: {e}\n")
         traceback.print_exc(file=sys.stderr)

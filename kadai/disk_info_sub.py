@@ -28,8 +28,8 @@ class SystemInfoSubscriber(Node):
             self.last_time = now
             self.msg_count = 0
 
-        # \033[H\033[J は画面をクリアしてカーソルを左上に移動させる
-        # flush=True を入れることで、溜め込まずにすぐ画面に出す
+
+
         sys.stdout.write("\033[H\033[J")
         output = (
             f"--- System Monitor Output (FPS: {self.current_fps:.1f}) ---\n"
@@ -46,7 +46,7 @@ def main(args=None):
     except KeyboardInterrupt:
         pass
     finally:
-        # 終了時のエラーを防ぐため、安全にノードを閉じる
+
         if rclpy.ok():
             node.destroy_node()
             rclpy.shutdown()
