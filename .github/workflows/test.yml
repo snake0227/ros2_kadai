@@ -9,9 +9,11 @@ jobs:
       - name: build and test
         shell: bash
         run: |
+
+          python3 -m pip install psutil
           # 1. ワークスペースの作成
           mkdir -p /root/ros2_ws/src/kadai
-          
+         
           # 2. カレントディレクトリの内容を src/kadai へコピー
           # これにより /root/ros2_ws/src/kadai/test/test.bash が配置されます
           rsync -av ./ /root/ros2_ws/src/kadai/

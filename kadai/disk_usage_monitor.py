@@ -14,8 +14,8 @@ class SystemMonitor(Node):
     def __init__(self, target_path):
         super().__init__('system_monitor')
         self.publisher_ = self.create_publisher(String, 'system_info', 10)
-        self.target_drive = '/mnt/c'
-        self.target_dir = target_path
+        self.target_drive = target_path # 引数で渡されたパスのドライブを見る
+self.target_dir = target_path
         self.timer = self.create_timer(2.0, self.timer_callback)
 
     def timer_callback(self):
