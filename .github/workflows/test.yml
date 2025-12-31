@@ -1,16 +1,26 @@
 name: test
-  on: push
-  jobs:
-    test:
-      runs-on: ubuntu-latest
-      strategy:
-        matrix:
-          python-version: ["3.7", "3.8", "3.9", "3.10"]
-      steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: All test
-        run: bash -xv ./test.bash
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    container: ryuichiueda/ubuntu22.04-ros2:latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: build and test
+        shell: bash  # コンテナ内での実行を確実にするため
+        run: |
+          # 1. ワークスペースの作成とソースのコピー
+          mkdir -p /root/ros2_ws/src
+          rsync -av ./ /root/ros2_ws/src/kadai/
+          
+          # 2. ワークスペースへ移動
+          cd /root/ros2_ws
+          
+          # 3. ビルド
+          # コンテナ内のROS 2環境を読み込んでからビルド
+          source /opt/ros/humble/setup.bash
+          colcon build --packages-select kadai
+          
+          # 4. テストの実行
+          # 第一引数に /root を渡して test.bash を起動
+          bash -xv ./src/kadai/test/test.bash /root
